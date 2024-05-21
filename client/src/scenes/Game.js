@@ -68,7 +68,7 @@ export class Game extends Scene
         this.load.image('back', '../assets/png-clipart-yu-gi-oh-skin-texture-mapping-pattern-field-soccer-field-rectangle-symmetry-thumbnail.png');
     }
     create () {
-
+        
     }
 
     update () {
