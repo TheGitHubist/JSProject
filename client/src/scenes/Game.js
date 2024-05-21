@@ -64,11 +64,10 @@ export class Game extends Scene
         this.load.image('Tu_veux_mon_sandwitch', '../assets/monstres/Tu_veux_mon_sandwitch.png');
 
         // Back of Card
-
         this.load.image('back', '../assets/png-clipart-yu-gi-oh-skin-texture-mapping-pattern-field-soccer-field-rectangle-symmetry-thumbnail.png');
     }
     create () {
-        
+        this.add.image(60, 60, 'back').setScale(30, 30);
     }
 
     update () {
