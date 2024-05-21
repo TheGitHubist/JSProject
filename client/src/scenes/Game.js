@@ -62,6 +62,10 @@ export class Game extends Scene
         this.load.image('Titan_Prismatique', '../assets/monstres/Titan_Prismatique.png');
         this.load.image('Titouan', '../assets/monstres/Titouan.png');
         this.load.image('Tu_veux_mon_sandwitch', '../assets/monstres/Tu_veux_mon_sandwitch.png');
+
+        // Back of Card
+
+        this.load.image('back', '../assets/png-clipart-yu-gi-oh-skin-texture-mapping-pattern-field-soccer-field-rectangle-symmetry-thumbnail.png');
     }
     create () {
 
