@@ -20,7 +20,7 @@ class Card {
       return this.imageLink;
     }
   
-    applyEffect() {
+    applyEffect(field, playerTurn, playerOpponent) {
       throw new Error("Must be implemented by subclass");
     }
 }
@@ -32,6 +32,7 @@ class Monster extends Card {
         }
         super(name, "Monster", imageLink);
         this.hp = hp;
+        const maxHP = hp;
         this.atk = atk;
         this.sacrificesRequired = sacrificesRequired;
         this.equipedCards = [];
@@ -55,6 +56,12 @@ class Monster extends Card {
 
     getEquipedCards() {
         return this.equipedCards;
+    }
+    getMaxHP() {
+        return this.maxHP;
+    }
+    setHP(hp) {
+        this.hp = hp;
     }
 }
 
@@ -106,8 +113,8 @@ class Field {
         this.PlayerTwoGraveyard = [];
         this.PlayerOneHand = [];
         this.PlayerTwoHand = [];
-        this.PlayerOneDeck = [];
-        this.PlayerTwoDeck = [];
+        this.PlayerOneDeck = new Deck().getPlayerOneDeck();
+        this.PlayerTwoDeck = new Deck().getPlayerTwoDeck();
         this.PlayerOneFieldsCard = [];
         this.PlayerTwoFieldsCard = [];
         this.PlayerOneContinousSpell = [];
@@ -167,9 +174,54 @@ class Field {
     }
 }
 
+class Deck {
+    constructor() {
+        this.PlayerOneDeck = [];
+        this.PlayerTwoDeck = [];
+    }
+    getPlayerOneDeck() {
+        return this.PlayerOneDeck;
+    }
+    getPlayerTwoDeck() {
+        return this.PlayerTwoDeck;
+    }
+    drawPlayerOne() {
+        return this.PlayerOneDeck.pop();
+    }
+    drawPlayerTwo() {
+        return this.PlayerTwoDeck.pop();
+    }
+}
+
 class PlayerOne {
     constructor(name) {
         this.name = name;
         this.hp = 100;
+        this.deck = new Field().getPlayerOneDeck();
+        this.hand = new Field().getPlayerOneHand();
+        this.hasWon = false;
     }
 }
+
+class PlayerTwo {
+    constructor(name) {
+        this.name = name;
+        this.hp = 100;
+        this.deck = new Field().getPlayerTwoDeck();
+        this.hand = new Field().getPlayerTwoHand();
+        this.hasWon = false;
+    }
+}
+
+module.exports = {
+    Card,
+    Monster,
+    Support,
+    Trap,
+    FieldCards,
+    Equipement,
+    Field,
+    Deck,
+    PlayerOne,
+    PlayerTwo,
+  };
