@@ -24,7 +24,7 @@ export class Game extends Scene
 
         // All Supports cards
         this.load.image('Appel_a_un_mentor', '../assets/soutien/Appel_a_un_mentor.png');
-        this.load.image('Avenement_de_la_democratie', '../assets/soutien/Avenement_de_la_democreatie.png');
+        this.load.image('Avenement_de_la_democratie', '../assets/soutien/Avenement_de_la_democratie.png');
         this.load.image('Chat_GPT', '../assets/soutien/Chat_GPT.png');
         this.load.image('crousty-poulet', '../assets/soutien/crousty-poulet.png');
         this.load.image('Nuit_Blanche', '../assets/soutien/Nuit_Blanche.png');
@@ -67,7 +67,7 @@ export class Game extends Scene
         this.load.image('back', '../assets/png-clipart-yu-gi-oh-skin-texture-mapping-pattern-field-soccer-field-rectangle-symmetry-thumbnail.png');
     }
     create () {
-        this.add.image(60, 60, 'back').setScale(30, 30);
+        this.add.image(645, 390, 'back').setScale(3.7, 2.8);
     }
 
     update () {
