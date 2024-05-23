@@ -63,7 +63,10 @@ export class Game extends Scene
         this.load.image('Titouan', '../assets/monstres/Titouan.png');
         this.load.image('Tu_veux_mon_sandwitch', '../assets/monstres/Tu_veux_mon_sandwitch.png');
 
-        // Back of field
+        //back of cards
+        this.load.image('dos-des-cartes','../assets/dos-des-cartes.png')
+
+        // field
         this.load.image('field', '../assets/png-clipart-yu-gi-oh-skin-texture-mapping-pattern-field-soccer-field-rectangle-symmetry-thumbnail.png');
     }
     create () {
@@ -73,6 +76,7 @@ export class Game extends Scene
         this.add.image(645, 390, 'field').setScale(3.7, 2.8);
 
         this.card = this.add.image( 650, 700, 'Tu_veux_mon_sandwitch' ).setScale(0.1, 0.1).setInteractive();
+        this.card = this.add.image( 650, 800, 'dos-des-cartes' ).setScale(0.1, 0.1).setInteractive();
         
         this.input.setDraggable(this.card);
 
