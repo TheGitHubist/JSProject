@@ -68,6 +68,11 @@ export class Game extends Scene
     }
     create () {
         this.add.image(645, 390, 'back').setScale(3.7, 2.8);
+
+        this.input.on('drag', function (pionter, gameObject, dragX, dragY)  {
+            gameObject.x = dragX;
+            gameObject.y = dragY;
+        })
     }
 
     update () {
