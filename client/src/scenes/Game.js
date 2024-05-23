@@ -75,8 +75,8 @@ export class Game extends Scene
 
         this.add.image(645, 390, 'field').setScale(3.7, 2.8);
 
-        this.card = this.add.image( 650, 700, 'Tu_veux_mon_sandwitch' ).setScale(0.1, 0.1).setInteractive();
-        this.card = this.add.image( 650, 800, 'dos-des-cartes' ).setScale(0.1, 0.1).setInteractive();
+        this.card = this.add.image( 650, 700, 'Tu_veux_mon_sandwitch' ).setScale(0.07, 0.07).setInteractive();
+        //this.card = this.add.image( 1200, 700, 'dos-des-cartes' ).setScale(0.16, 0.16).setInteractive();
         
         this.input.setDraggable(this.card);
 
