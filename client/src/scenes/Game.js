@@ -74,7 +74,7 @@ export class Game extends Scene
 
         this.card = this.add.image( 300, 300, 'Tu_veux_mon_sandwitch' ).setScale(0.1, 0.1).setInteractive();
         
-        this.inputnput.setDraggable(this.card);
+        this.input.setDraggable(this.card);
 
         this.input.on('drag', function (pointer, gameObject, dragX, dragY)  {
             gameObject.x = dragX;
