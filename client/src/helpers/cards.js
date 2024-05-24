@@ -12,8 +12,8 @@ const {
 } = require('./cardClasses.js');
 
 class ExodiaAnthony extends Monster {
-    constructor(playerPlaying, playerOpponent) {
-        super('Exodia Anthony', './', 1000, 1000, 4);
+    constructor(playerPlaying, playerOpponent, image) {
+        super('Exodia Anthony', image, 1000, 1000, 4);
         this.playerPlaying = playerPlaying;
         this.playerOpponent = playerOpponent;
     }
@@ -24,7 +24,7 @@ class ExodiaAnthony extends Monster {
 
 class SalutAToiJeuneEntrepreneur extends Monster {
     constructor(playerPlaying, playerOpponent, hpOfSacrifices) {
-        super('Salut A Toi Jeune Entrepreneur', './', 10, hpOfSacrifices, 2);
+        super('Salut A Toi Jeune Entrepreneur', image, 10, hpOfSacrifices, 2);
         this.playerPlaying = playerPlaying;
         this.playerOpponent = playerOpponent;
         this.hasUsedEffect = false;

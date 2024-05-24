@@ -89,18 +89,38 @@ export class Game extends Scene
             gameObject.y = dragY;
         })
     }
+    drawCard(cardNumber, deckCard) {
+        while (cardNumber < 5) {
+            this.makeCard(deckCard.pop(), cardNumber);
+            cardNumber++;
+        }
+    }
+    shuffle(array) {
+        let currentIndex = array.length;
+        while (currentIndex != 0) {
+          let randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+          [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+        }
+      }
     create () {
-
         let self = this
 
         this.add.image(645, 390, 'field').setScale(3.7, 2.8);
         this.cardBack = this.add.image( 1067, 700, 'dos-des-cartes' ).setScale(0.1, 0.1);
 
-        this.makeCard('Titouan', 0)
-        this.makeCard('Arcaniste_Prismatique', 1)
-        this.makeCard('Chasseur_Prismatique', 2)
-        this.makeCard('Developpeur_surcharge', 3)
-        this.makeCard('Saitam-Azad', 4)
+        this.cardBack = this.add.image( 205, 55, 'dos-des-cartes' ).setScale(0.1, 0.1);
+
+        for (let i = 0; i < 5; i++) {
+            this.cardBack = this.add.image( 455 + (89*i), 25, 'dos-des-cartes' ).setScale(0.09, 0.09);
+        }
+
+        let deck = ['Titouan', 'Saitam-Azad', 'Salut_a_toi_jeune_entrepreneur', 'Mage_Vodoo_Ultime', 'Tu_veux_mon_sandwitch', 'MemeLord_Malveillance_MAX']
+        this.shuffle(deck);
+
+        let cardNumber = 0;
+        this.drawCard(cardNumber, deck);
     }
 
     update () {
