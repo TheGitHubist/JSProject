@@ -1,4 +1,6 @@
 import { Scene } from 'phaser';
+const { Card, Monster, Support, Trap, FieldCards, Equipement, Field, Deck, PlayerOne, PlayerTwo } = require('../helpers/cardClasses.js');
+
 
 export class Game extends Scene
 {

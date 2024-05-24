@@ -44,3 +44,6 @@ class SalutAToiJeuneEntrepreneur extends Monster {
         this.hasUsedEffect = true;
     }
 }
+
+
+module.exports = { ExodiaAnthony, SalutAToiJeuneEntrepreneur };
