@@ -69,21 +69,38 @@ export class Game extends Scene
         // field
         this.load.image('field', '../assets/png-clipart-yu-gi-oh-skin-texture-mapping-pattern-field-soccer-field-rectangle-symmetry-thumbnail.png');
     }
+    moveDown(gameObject) {
+        gameObject.y += 10;
+    }
+    moveUp(gameObject) {
+        gameObject.y -= 10;
+    }
+    moveLeft(gameObject) {
+        gameObject.x -= 10;
+    }
+    moveRight(gameObject) {
+        gameObject.x += 10;
+    }
+    makeCard(name, xPos) {
+        this.card = this.add.image( 470 + (xPos*90), 750, name ).setScale(0.06, 0.06).setInteractive();
+        this.input.setDraggable(this.card);
+        this.input.on('drag', function (pointer, gameObject, dragX, dragY)  {
+            gameObject.x = dragX;
+            gameObject.y = dragY;
+        })
+    }
     create () {
 
         let self = this
 
         this.add.image(645, 390, 'field').setScale(3.7, 2.8);
+        this.cardBack = this.add.image( 1067, 700, 'dos-des-cartes' ).setScale(0.1, 0.1);
 
-        this.card = this.add.image( 650, 700, 'Tu_veux_mon_sandwitch' ).setScale(0.07, 0.07).setInteractive();
-        //this.card = this.add.image( 1200, 700, 'dos-des-cartes' ).setScale(0.16, 0.16).setInteractive();
-        
-        this.input.setDraggable(this.card);
-
-        this.input.on('drag', function (pointer, gameObject, dragX, dragY)  {
-            gameObject.x = dragX;
-            gameObject.y = dragY;
-        })
+        this.makeCard('Titouan', 0)
+        this.makeCard('Arcaniste_Prismatique', 1)
+        this.makeCard('Chasseur_Prismatique', 2)
+        this.makeCard('Developpeur_surcharge', 3)
+        this.makeCard('Saitam-Azad', 4)
     }
 
     update () {
