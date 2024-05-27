@@ -19,14 +19,42 @@ class Card {
     getImageLink() {
       return this.imageLink;
     }
-  
-    applyEffect(field, playerTurn, playerOpponent) {
-      throw new Error("Must be implemented by subclass");
+    applyEffect(field, playerPlaying, playerOpponent, effects) {
+        // Default implementation, can be overridden by subclasses
+        if (effects && effects.length > 0) {
+          effects.forEach((effect) => {
+            switch (effect.type) {
+              case 'drawMentor':
+                const mentorCard = playerPlaying.deck.drawCardByType('Mentor');
+                if (mentorCard) {
+                  playerPlaying.hand.addCard(mentorCard);
+                  effect.once = true; // mark as used
+                }
+                break;
+              case 'unkillable':
+                if (effect.hp === 0) {
+                  effect.hp = 1; // prevent HP from reaching 0
+                }
+                break;
+              case 'doubleSacrifice':
+                if (effect.sacrificed) {
+                  playerPlaying.hand.addCard(this); // return to hand
+                  effect.sacrifices = 2; // count as 2 sacrifices
+                }
+                break;
+              // Add more effect types as needed
+              default:
+                console.log(`Unknown effect type: ${effect.type}`);
+            }
+          });
+        } else {
+          console.log('No effect options provided');
+        }
     }
 }
 
 class Monster extends Card {
-    constructor(name, imageLink, hp, atk, sacrificesRequired) {
+    constructor(name, imageLink, hp, atk, sacrificesRequired, isMentor) {
         if (new.target === Card) {
             throw new TypeError("Cannot construct Monster instances directly");
         }
@@ -36,10 +64,7 @@ class Monster extends Card {
         this.atk = atk;
         this.sacrificesRequired = sacrificesRequired;
         this.equipedCards = [];
-    }
-  
-    applyEffect() {
-        throw new Error("Must be implemented by subclass");
+        this.isMentor = isMentor;
     }
   
     getHP() {
@@ -113,8 +138,8 @@ class Field {
         this.PlayerTwoGraveyard = [];
         this.PlayerOneHand = [];
         this.PlayerTwoHand = [];
-        this.PlayerOneDeck = new Deck().getPlayerOneDeck();
-        this.PlayerTwoDeck = new Deck().getPlayerTwoDeck();
+        this.PlayerOneDeck = new Deck().getDeck();
+        this.PlayerTwoDeck = new Deck().getDeck();
         this.PlayerOneFieldsCard = [];
         this.PlayerTwoFieldsCard = [];
         this.PlayerOneContinousSpell = [];
@@ -176,22 +201,31 @@ class Field {
 
 class Deck {
     constructor() {
-        this.PlayerOneDeck = [];
-        this.PlayerTwoDeck = [];
+      this.cards = [];
     }
-    getPlayerOneDeck() {
-        return this.PlayerOneDeck;
+  
+    addCard(card) {
+      this.cards.push(card);
     }
-    getPlayerTwoDeck() {
-        return this.PlayerTwoDeck;
+  
+    drawCard() {
+      return this.cards.pop();
     }
-    drawPlayerOne() {
-        return this.PlayerOneDeck.pop();
+
+    getDeck() {
+        return this.cards;
     }
-    drawPlayerTwo() {
-        return this.PlayerTwoDeck.pop();
+  
+    drawCardByType(type) {
+      const matchingCards = this.cards.filter((card) => card.type === type);
+      if (matchingCards.length > 0) {
+        return this.drawCard();
+      } else {
+        console.log(`No cards of type ${type} found in the deck`);
+        return null;
+      }
     }
-}
+  }
 
 class PlayerOne {
     constructor(name) {

@@ -11,39 +11,31 @@ const {
     PlayerTwo,
 } = require('./cardClasses.js');
 
-class ExodiaAnthony extends Monster {
-    constructor(playerPlaying, playerOpponent, image) {
-        super('Exodia Anthony', image, 1000, 1000, 4);
-        this.playerPlaying = playerPlaying;
-        this.playerOpponent = playerOpponent;
+class CardFactory {
+    createCard(cardType, name, image, effect, ...params) {
+      switch (cardType) {
+        case 'Monster':
+          const monster = new Monster(name, image, ...params);
+          monster.applyEffect = effect;
+          return monster;
+        case 'Support':
+          const support = new Support(name, image, ...params);
+          support.applyEffect = effect;
+          return support;
+        case 'Trap':
+          const trap = new Trap(name, image, ...params);
+          trap.applyEffect = effect;
+          return trap;
+        case 'FieldCards':
+          const fieldCard = new FieldCards(name, image, ...params);
+          fieldCard.applyEffect = effect;
+          return fieldCard;
+        case 'Equipement':
+          const equipement = new Equipement(name, image, ...params);
+          equipement.applyEffect = effect;
+          return equipement;
+        default:
+          throw new Error(`Unknown card type: ${cardType}`);
+      }
     }
-    applyEffect(field, playerPlaying, playerOpponent) {
-        playerPlaying.hasWon = true;
-    }
-}
-
-class SalutAToiJeuneEntrepreneur extends Monster {
-    constructor(playerPlaying, playerOpponent, hpOfSacrifices) {
-        super('Salut A Toi Jeune Entrepreneur', image, 10, hpOfSacrifices, 2);
-        this.playerPlaying = playerPlaying;
-        this.playerOpponent = playerOpponent;
-        this.hasUsedEffect = false;
-    }
-    applyEffect(field, playerPlaying, playerOpponent) {
-        if (this.hasUsedEffect) {
-            return;
-        }
-        for (card in field.PlayerOneField) {
-            card.setHP(card.getMaxHP());
-            this.atk += card.getATK();
-        }
-        for (card in field.PlayerTwoField) {
-            card.setHP(card.getMaxHP());
-            this.atk += card.getATK();
-        }
-        this.hasUsedEffect = true;
-    }
-}
-
-
-module.exports = { ExodiaAnthony, SalutAToiJeuneEntrepreneur };
+  }
