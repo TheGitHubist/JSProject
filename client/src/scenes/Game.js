@@ -1,6 +1,15 @@
 import { Scene } from 'phaser';
 const { Card, Monster, Support, Trap, FieldCards, Equipement, Field, Deck, PlayerOne, PlayerTwo } = require('../helpers/cardClasses.js');
 
+class guiCard {
+    constructor(scene, name, xPos) {
+        this.card = scene.add.image( 470 + (xPos*90), 750, name ).setScale(0.06, 0.06).setInteractive();
+        this.scene = scene;
+        this.originX = 470 + (xPos*90);
+        this.originY = 750;
+        this.hasBeenDraged = false;
+    }
+}
 
 export class Game extends Scene
 {
@@ -72,32 +81,76 @@ export class Game extends Scene
         this.load.image('field', '../assets/png-clipart-yu-gi-oh-skin-texture-mapping-pattern-field-soccer-field-rectangle-symmetry-thumbnail.png');
 
         this.field = new Field();
+        this.cards = []
     }
-    positionChecker(x, y, typeCard, card) {
+
+    positionChecker(x, y, originX, originY, typeCard, card, gameObject) {
+        const monsterField = this.field.PlayerOneMonsterField;
+        const specialField = this.field.PlayerOneSpecialField;
+    
         switch(typeCard) {
             case 'monster':
-                if (this.field.PlayerOneMonsterCard.length < 5) {
-                    if (y > 500 && y < 700) {
-                        this.field.PlayerOneMonsterField.push(card);
-                    }
+                if (card.hasBeenDraged) {
+                    gameObject.x = originX;
+                    gameObject.y = originY;
+                    return false;
                 }
-                break;
+
+                if (monsterField.length >= 5) {
+                    gameObject.x = originX;
+                    gameObject.y = originY;
+                    return false;
+                }
+    
+                if (y < 460 || y > 580) {
+                    gameObject.x = originX;
+                    gameObject.y = originY;
+                    return false;
+                }
+    
+                if (x <= 430 && x >= 300) {
+                    gameObject.x = 355;
+                } else if (x > 430 && x <= 560) {
+                    gameObject.x = 500;
+                } else if (x > 560 && x <= 700) {
+                    gameObject.x = 640;
+                } else if (x > 700 && x <= 840) {
+                    gameObject.x = 780;
+                } else if (x > 840 && x <= 970) {
+                    gameObject.x = 920;
+                } else {
+                    gameObject.x = originX;
+                    gameObject.y = originY;
+                    return false;
+                }
+    
+                gameObject.y = 520;
+    
+                monsterField.push(card);
+                card.hasBeenDraged = true;
+                return true;
+    
             case 'support':
-                if (this.field.PlayerOneSpecialField.length < 5) {
-                    if (y > 700 && y < 750) {
-                        this.field.PlayerOneSpecialField.push(card);
-                    }
-                }
-                break;
             case 'trap':
-                if (this.field.PlayerOneSpecialField.length < 5) {
-                    if (y > 700 && y < 750) {
-                        this.field.PlayerOneSpecialField.push(card);
-                    }
+                if (specialField.length >= 5) {
+                    gameObject.x = originX;
+                    gameObject.y = originY;
+                    return false;
                 }
-                break;
-            }
+    
+                if (y < 700 || y > 750) {
+                    gameObject.x = originX;
+                    gameObject.y = originY;
+                    return false;
+                }
+    
+                gameObject.x = x;
+                gameObject.y = 725;
+    
+                specialField.push(card);
+                return true;
         }
+    }
     moveDown(gameObject) {
         gameObject.y += 10;
     }
@@ -111,12 +164,8 @@ export class Game extends Scene
         gameObject.x += 10;
     }
     makeCard(name, xPos) {
-        this.card = this.add.image( 470 + (xPos*90), 750, name ).setScale(0.06, 0.06).setInteractive();
-        this.input.setDraggable(this.card);
-        this.input.on('drag', function (pointer, gameObject, dragX, dragY)  {
-            gameObject.x = dragX;
-            gameObject.y = dragY;
-        })
+        let card = new guiCard(this, name, xPos)
+        this.cards.push(card)
     }
     drawCard(cardNumber, deckCard) {
         while (cardNumber < 5) {
@@ -135,6 +184,8 @@ export class Game extends Scene
       }
     create () {
         let self = this
+        this.mouseX = this.input.mousePointer.x
+        this.mouseY = this.input.mousePointer.y
 
         this.add.image(645, 390, 'field').setScale(3.7, 2.8);
         this.cardBack = this.add.image( 1067, 700, 'dos-des-cartes' ).setScale(0.1, 0.1);
@@ -151,8 +202,60 @@ export class Game extends Scene
         let cardNumber = 0;
         this.drawCard(cardNumber, deck);
     }
-
-    update () {
-
+    playCardOnHand(x, y) {
+        if (y > 700 && y < 800) {
+            if (x < 520) {
+                this.cards[0].move(x, y)
+            }
+        }
+    }
+    
+    update(time, delta) {
+        this.mouseX = this.input.mousePointer.x;
+        this.mouseY = this.input.mousePointer.y;
+    
+        let cardToDrag = null;
+    
+        if (this.currentlyDraggingCard) {
+            for (let i = 0; i < this.cards.length; i++) {
+                let card = this.cards[i];
+                if (!card.hasBeenDraged && Phaser.Geom.Rectangle.Contains(card.card.getBounds(), this.input.manager.activePointer.x, this.input.manager.activePointer.y)) {
+                    cardToDrag = card;
+                    break;
+                }
+            }
+        } else {
+            for (let i = 0; i < this.cards.length; i++) {
+                let card = this.cards[i];
+                if (!card.hasBeenDraged && Phaser.Geom.Rectangle.Contains(card.card.getBounds(), this.input.manager.activePointer.x, this.input.manager.activePointer.y)) {
+                    cardToDrag = card;
+                    break;
+                }
+            }
+        }
+    
+        if (cardToDrag && this.input.manager.activePointer.isDown) {
+            if (!this.currentlyDraggingCard || this.currentlyDraggingCard !== cardToDrag) {
+                if (this.currentlyDraggingCard) {
+                    this.currentlyDraggingCard.isDragging = false;
+                    this.input.setDraggable(this.currentlyDraggingCard.card, false);
+                }
+                cardToDrag.isDragging = true;
+                this.input.setDraggable(cardToDrag.card);
+                this.currentlyDraggingCard = cardToDrag;
+            }
+            cardToDrag.card.x = this.input.manager.activePointer.x;
+            cardToDrag.card.y = this.input.manager.activePointer.y;
+            
+        } else if (this.currentlyDraggingCard && !this.input.manager.activePointer.isDown) {
+            this.currentlyDraggingCard.isDragging = false;
+            this.input.setDraggable(this.currentlyDraggingCard.card, false);
+            let ActX = this.currentlyDraggingCard.card.x;
+            let ActY = this.currentlyDraggingCard.card.y;
+            this.positionChecker(ActX, ActY, this.currentlyDraggingCard.originX, this.currentlyDraggingCard.originY, 'monster', this.currentlyDraggingCard, this.currentlyDraggingCard.card);
+            this.currentlyDraggingCard.originX = ActX;
+            this.currentlyDraggingCard.originY = ActY;
+            this.currentlyDraggingCard = null;
+        }
     }
 }
