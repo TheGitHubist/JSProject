@@ -1,21 +1,5 @@
 import { Scene } from 'phaser';
 
-const Specialities = {
-    Unkillable : 0,
-    SummonMentor : 1,
-    DoubleSacrifices : 2,
-    Winning : 3,
-    Poison : 4,
-    Heal : 5,
-    HalvenHp : 6,
-    StopTurn : 7,
-    NegateAttack : 8,
-    NegateEffect : 9,
-    BackToHand : 10,
-    UnaffectedByEffect : 11,
-    
-}
-
 class Field {
     constructor() {
         this.PlayerOneMonsterField = [];
@@ -36,6 +20,8 @@ class Field {
         this.PlayerTwoContinousTrap = [];
         this.PlayerOneAnihilatedCards = [];
         this.PlayerTwoAnihilatedCards = [];
+        this.playerOneSacrifices = [];
+        this.playerTwoSacrifices = [];
     }
 }
 
@@ -78,6 +64,7 @@ class Card {
         this.hp = hp;
         this.sacrificesRequired = sacrificesRequired;
         this.maxHp = hp;
+        this.effects = [];
     }
     heal(heal) {
         this.hp += heal;
@@ -89,6 +76,17 @@ class Card {
         this.hp = this.hp - atk
         if (this.hp < 0) {
             this.hp = 0
+        }
+    }
+    addEffect(func) {
+        this.effects.push(func);
+    }
+    applyEffect() {
+        if (this.effects.length === 0) {
+            return;
+        }
+        for (effect in this.effects) {
+            effect();
         }
     }
 }
