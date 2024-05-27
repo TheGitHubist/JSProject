@@ -78,15 +78,20 @@ class Card {
             this.hp = 0
         }
     }
-    addEffect(func) {
-        this.effects.push(func);
+    addEffect(effect) {
+        this.effects.push(effect);
     }
-    applyEffect() {
-        if (this.effects.length === 0) {
-            return;
-        }
-        for (effect in this.effects) {
-            effect();
+    applyEffects() {
+        for (let i = 0; i < this.effects.length; i++) {
+            const effect = this.effects[i];
+            if (effect.params) {
+                effect.func.call(this, effect.params);
+            } else {
+                effect.func.call(this);
+            }
+            if (!effect.repeat) {
+                this.effects.splice(i, 1);
+            }
         }
     }
 }
