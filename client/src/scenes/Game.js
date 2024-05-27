@@ -1,13 +1,95 @@
 import { Scene } from 'phaser';
-const { Card, Monster, Support, Trap, FieldCards, Equipement, Field, Deck, PlayerOne, PlayerTwo } = require('../helpers/cardClasses.js');
 
-class guiCard {
-    constructor(scene, name, xPos) {
+const Specialities = {
+    Unkillable : 0,
+    SummonMentor : 1,
+    DoubleSacrifices : 2,
+    Winning : 3,
+    Poison : 4,
+    Heal : 5,
+    HalvenHp : 6,
+    StopTurn : 7,
+    NegateAttack : 8,
+    NegateEffect : 9,
+    BackToHand : 10,
+    UnaffectedByEffect : 11,
+    
+}
+
+class Field {
+    constructor() {
+        this.PlayerOneMonsterField = [];
+        this.PlayerTwoMonsterField = [];
+        this.PlayerOneSpecialField = [];
+        this.PlayerTwoSpecialField = [];
+        this.PlayerOneGraveyard = [];
+        this.PlayerTwoGraveyard = [];
+        this.PlayerOneHand = [];
+        this.PlayerTwoHand = [];
+        this.PlayerOneDeck = new Deck().getDeck();
+        this.PlayerTwoDeck = new Deck().getDeck();
+        this.PlayerOneFieldsCard = [];
+        this.PlayerTwoFieldsCard = [];
+        this.PlayerOneContinousSpell = [];
+        this.PlayerTwoContinousSpell = [];
+        this.PlayerOneContinousTrap = [];
+        this.PlayerTwoContinousTrap = [];
+        this.PlayerOneAnihilatedCards = [];
+        this.PlayerTwoAnihilatedCards = [];
+    }
+}
+
+class Deck {
+    constructor() {
+      this.cards = [];
+    }
+  
+    addCard(card) {
+      this.cards.push(card);
+    }
+  
+    drawCard() {
+      return this.cards.pop();
+    }
+
+    getDeck() {
+        return this.cards;
+    }
+  
+    drawCardByType(type) {
+        const matchingCards = this.cards.filter((card) => card.type === type);
+        if (matchingCards.length > 0) {
+            return this.drawCard();
+        } else {
+            console.log(`No cards of type ${type} found in the deck`);
+            return null;
+        }
+    }
+}
+
+class Card {
+    constructor(scene, name, xPos, atk, hp, sacrificesRequired) {
         this.card = scene.add.image( 470 + (xPos*90), 750, name ).setScale(0.06, 0.06).setInteractive();
         this.scene = scene;
         this.originX = 470 + (xPos*90);
         this.originY = 750;
         this.hasBeenDraged = false;
+        this.atk = atk;
+        this.hp = hp;
+        this.sacrificesRequired = sacrificesRequired;
+        this.maxHp = hp;
+    }
+    heal(heal) {
+        this.hp += heal;
+    }
+    attack(card) {
+        card.takeDamage(this.atk);
+    }
+    takeDamage(atk) {
+        this.hp = this.hp - atk
+        if (this.hp < 0) {
+            this.hp = 0
+        }
     }
 }
 
@@ -164,7 +246,7 @@ export class Game extends Scene
         gameObject.x += 10;
     }
     makeCard(name, xPos) {
-        let card = new guiCard(this, name, xPos)
+        let card = new Card(this, name, xPos)
         this.cards.push(card)
     }
     drawCard(cardNumber, deckCard) {
