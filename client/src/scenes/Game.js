@@ -127,7 +127,7 @@ export class Game extends Scene
         this.load.image('Bonne_Salle.png', '../assets/equipement/Bonne_Salle.png');
         this.load.image('Electricite', '../assets/equipement/Electricite.png');
         this.load.image('Lamentation', '../assets/equipement/Lamentation.png');
-        this.load.image('SetUpLoL', '../assets/equipement/Set-up_de_riche_pour_LoL.png');
+        this.load.image('SetUpLoL', '../assets/equipement/Set_up_de_riche_pour_LoL.png');
         this.load.image('SOUK', '../assets/equipement/SOUK.png');
         this.load.image('Spectre', '../assets/equipement/Spectre.png');
         this.load.image('SSD_2To', '../assets/equipement/SSD_2To.png');
@@ -135,30 +135,32 @@ export class Game extends Scene
 
         // All field cards
         this.load.image('Forteresse', '../assets/terrain/Forteresse.png');
-        this.load.image('Reseaux-vex', '../assets/terrain/Reseaux-vex.png');
+        this.load.image('Reseaux_vex', '../assets/terrain/Reseaux-vex.png');
 
         // All Supports cards
         this.load.image('Appel_a_un_mentor', '../assets/soutien/Appel_a_un_mentor.png');
         this.load.image('Avenement_de_la_democratie', '../assets/soutien/Avenement_de_la_democratie.png');
         this.load.image('Chat_GPT', '../assets/soutien/Chat_GPT.png');
-        this.load.image('crousty-poulet', '../assets/soutien/crousty-poulet.png');
+        this.load.image('crousty_poulet', '../assets/soutien/crousty_poulet.png');
         this.load.image('Nuit_Blanche', '../assets/soutien/Nuit_Blanche.png');
         this.load.image('Tomate_Reveilletard', '../assets/soutien/Tomate_Reveilletard.png');
         this.load.image('Trous_noirs', '../assets/soutien/Trous_noirs.png');
+        this.load.image('Open_source', '../assets/soutien/Open_source.png'); 
 
         // All Traps cards
         this.load.image('Article_absolu', '../assets/piege/Article_absolu.png');
         this.load.image('Cest_linstant___INFOGRAMMES', '../assets/piege/Cest_linstant___INFOGRAMMES.png');
-        this.load.image('crousty-chips', '../assets/piege/crousty-chips.png');
+        this.load.image('crousty_chips', '../assets/piege/crousty_chips.png');
         this.load.image('Decalage_horaire', '../assets/piege/Decalage_horaire.png');
         this.load.image('hackerman', '../assets/piege/hackerman.png');
         this.load.image('Insomnie', '../assets/piege/Insomnie.png');
         this.load.image('Bomb', "../assets/piege/Nah_I'd_Eagle_500KG_bomb.png");
-        this.load.image('RTFD', '../assets/piege/R.T.F.D.png');
+        this.load.image('RTFD', '../assets/piege/R_T_F_D.png');
         this.load.image('Solution_des_mentors', '../assets/piege/Solution_des_mentors.png');
         this.load.image('Tele_de_la_salle_201.png', '../assets/piege/Tele_de_la_salle_201.png');
-        this.load.image('Thomas_Strambismes', '../assets/piege/Thomas_Strambismes.png');
+        this.load.image('Thomas_Strabismes', '../assets/piege/Thomas_Strabismes.png');
         this.load.image('Anti_mentor', '../assets/piege/Touche_a_mon_PC_jte_fume.png');
+        this.load.image('Nah_i_d_Eagle_500KG_bomb', '../assets/piege/Nah_i_d_Eagle_500KG_bomb.png');
 
         // All Monsters Cards
         this.load.image('Arcaniste_Prismatique', '../assets/monstres/Arcaniste_Prismatique.png');
@@ -313,9 +315,40 @@ export class Game extends Scene
         let Sentinelle = new CardData('Sentinelle', 17, 10, 0)
         let Tu_veux_mon_sandwitch = new CardData('Tu_veux_mon_sandwitch ', 10, 10, 0)
         let Developpeur_surcharge = new CardData('Developpeur_surcharge', 1, 10, 0)
-        let Titan_Prismatique = new CardData('Titan_Prismatique', 20, 12, 0)
-        let Chasseur_Prismatique = new CardData('Chasseur_Prismatique', 20, 12, 0)
-        let Arcaniste_Prismatique = new CardData('Arcaniste_Prismatique', 20, 12, 0)
+        let Titan_Prismatique = new CardData('Titan_Prismatique', 20, 12, 1)
+        let Chasseur_Prismatique = new CardData('Chasseur_Prismatique', 20, 12, 1)
+        let Arcaniste_Prismatique = new CardData('Arcaniste_Prismatique', 20, 12, 1)
+        let Article_absolu = new CardData('Article', 0, 0, 0)
+        let Cest_linstant___INFOGRAMMES = new CardData('Cest_linstant___INFOGRAMMES ', 0, 0, 0)
+        let Crousty_chips = new CardData('Crousty_chips ', 0, 0, 0)
+        let Decalage_horaire = new CardData('Decalage_horaire ', 0, 0, 0)
+        let hackerman = new CardData('hackerman', 0, 0, 0)
+        let Insomnie= new CardData('Insomnie', 0, 0, 0)
+        let Nah_i_d_Eagle_500KG_bomb = new CardData('Nah_i_d_Eagle_500KG_bomb', 0, 0, 0)
+        let R_T_D_F= new CardData('R_T_D_F', 0, 0, 0)
+        let Solution_des_mentors = new CardData('Solution_des_mentors', 0, 0, 0)
+        let Tele_de_la_salle_201 = new CardData('Tele_de_la_salle_201', 0, 0, 0)
+        let Thomas_Strabismes = new CardData('Thomas_Strabisme', 0, 0, 0)
+        let Touche_a_mon_PC_jte_fume = new CardData('Touche_a_mon_PC_jte_fume', 0, 0, 0)
+        let Forteresse = new CardData('Forteresse', 0, 0, 0)
+        let Reseaux_vex = new CardData('Reseaux_vex', 0, 0, 0)
+        let big_bob = new CardData('big_bob', 0, 0, 0)
+        let Bonne_Salle = new CardData('Bonne_salle', 0, 0, 0)
+        let Electricite = new CardData('Elecricite', 0, 0, 0)
+        let Lamentation = new CardData('Lamentation', 0, 0, 0)
+        let Set_up_de_riche_pour_lol = new CardData('Set_up_de_riche_pour_lol', 0, 0, 0)
+        let SOUK = new CardData('SOUK', 0, 0, 0)
+        let Spectre = new CardData('Spectre', 0, 0, 0)
+        let SSD_2To = new CardData('SSD_2To', 0, 0, 0)
+        let Vexcalibur = new CardData('Vexcalibure', 0, 0, 0)
+        let Appel_a_un_mentor = new CardData('Appel_a_un_mentor', 0, 0, 0)
+        let Avenement_de_la_democratie = new CardData('Avenement_de_la_democratie', 0, 0, 0)
+        let Chat_GPT = new CardData('Chat_GPT', 0, 0, 0)
+        let crousty_poulet = new CardData('crousty_poulet', 0, 0, 0)
+        let Tomate_Reveilletard = new CardData('Tomate_Reveilletard', 0, 0, 0)
+        let Open_source = new CardData('Open_source', 0, 0, 0)
+        let Nuit_Blanche = new CardData('Nuit_Blanche', 0, 0, 0)
+        let Trous_noirs = new CardData('Trous_noirs', 0, 0, 0)
 
 
         let deck = [saitamazad, titouan, MemeLord_Malveillance_MAX, vodoo, lol]
