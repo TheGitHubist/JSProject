@@ -310,6 +310,13 @@ export class Game extends Scene
         let Thomas_Fourras = new CardData('Thomas_Fourras', 13, 1, 0)
         let Luka_retraite = new CardData('Luka_retraite', 14, 9, 0)
         let lol = new CardData('Ranked_Level_400_sur_LoL', 12, 8, 0)
+        let Sentinelle = new CardData('Sentinelle', 17, 10, 0)
+        let Tu_veux_mon_sandwitch = new CardData('Tu_veux_mon_sandwitch ', 10, 10, 0)
+        let Developpeur_surcharge = new CardData('Developpeur_surcharge', 1, 10, 0)
+        let Titan_Prismatique = new CardData('Titan_Prismatique', 20, 12, 0)
+        let Chasseur_Prismatique = new CardData('Chasseur_Prismatique', 20, 12, 0)
+        let Arcaniste_Prismatique = new CardData('Arcaniste_Prismatique', 20, 12, 0)
+
 
         let deck = [saitamazad, titouan, MemeLord_Malveillance_MAX, vodoo, lol]
 
