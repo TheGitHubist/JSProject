@@ -94,6 +94,9 @@ class Card {
             }
         }
     }
+    canSummon() {
+        return this.scene.field.playerOneSacrifices.length >= this.sacrificesRequired;
+    }
 }
 
 export class Game extends Scene
@@ -249,15 +252,10 @@ export class Game extends Scene
     moveRight(gameObject) {
         gameObject.x += 10;
     }
-    makeCard(name, xPos) {
-        let card = new Card(this, name, xPos)
+    makeCard(name, xPos, params) {
+        let card = new Card(this, name, xPos, params.atk, params.hp, params.sacrificesRequired)
+        this.field.PlayerOneHand.push(card);
         this.cards.push(card)
-    }
-    drawCard(cardNumber, deckCard) {
-        while (cardNumber < 5) {
-            this.makeCard(deckCard.pop(), cardNumber);
-            cardNumber++;
-        }
     }
     shuffle(array) {
         let currentIndex = array.length;
@@ -283,10 +281,45 @@ export class Game extends Scene
         }
 
         let deck = ['Titouan', 'Saitam-Azad', 'Salut_a_toi_jeune_entrepreneur', 'Mage_Vodoo_Ultime', 'Tu_veux_mon_sandwitch', 'MemeLord_Malveillance_MAX']
+        let paramss = [
+            {
+                atk: 5,
+                hp: 10,
+                sacrificesRequired: 0,
+            }, 
+            {
+                atk: 20,
+                hp: 1,
+                sacrificesRequired: 0,
+            },
+            {
+                atk: 15,
+                hp: 10,
+                sacrificesRequired: 2,
+            },
+            {
+                atk: 1,
+                hp: 1,
+                sacrificesRequired: 0,
+            },
+            {
+                atk: 10,
+                hp: 12,
+                sacrificesRequired: 0,
+            }, 
+            {
+                atk: 20,
+                hp: 20,
+                sacrificesRequired: 4,
+            }
+        ]
         this.shuffle(deck);
+        this.shuffle(paramss);
 
         let cardNumber = 0;
-        this.drawCard(cardNumber, deck);
+        for (let i = 0; i < 5; i++) {
+            this.makeCard(deck[i], i, paramss[i]);
+        }
     }
     playCardOnHand(x, y) {
         if (y > 700 && y < 800) {
@@ -305,7 +338,7 @@ export class Game extends Scene
         if (this.currentlyDraggingCard) {
             for (let i = 0; i < this.cards.length; i++) {
                 let card = this.cards[i];
-                if (!card.hasBeenDraged && Phaser.Geom.Rectangle.Contains(card.card.getBounds(), this.input.manager.activePointer.x, this.input.manager.activePointer.y)) {
+                if (card.canSummon() && !card.hasBeenDraged && Phaser.Geom.Rectangle.Contains(card.card.getBounds(), this.input.manager.activePointer.x, this.input.manager.activePointer.y)) {
                     cardToDrag = card;
                     break;
                 }
@@ -313,7 +346,7 @@ export class Game extends Scene
         } else {
             for (let i = 0; i < this.cards.length; i++) {
                 let card = this.cards[i];
-                if (!card.hasBeenDraged && Phaser.Geom.Rectangle.Contains(card.card.getBounds(), this.input.manager.activePointer.x, this.input.manager.activePointer.y)) {
+                if (card.canSummon() && !card.hasBeenDraged && Phaser.Geom.Rectangle.Contains(card.card.getBounds(), this.input.manager.activePointer.x, this.input.manager.activePointer.y)) {
                     cardToDrag = card;
                     break;
                 }
