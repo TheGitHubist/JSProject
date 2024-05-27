@@ -35,8 +35,15 @@ class Deck {
     }
   
     drawCard() {
-      return this.cards.pop();
-    }
+        if (this.field.PlayerOneDeck.length > 0) {
+          let randomIndex = Math.floor(Math.random() * this.field.PlayerOneDeck.length);
+          let drawnCard = this.field.PlayerOneDeck.splice(randomIndex, 1)[0];
+          this.makeCard(drawnCard.name, 0, { atk: drawnCard.atk, hp: drawnCard.hp, sacrificesRequired: drawnCard.sacrificesRequired });
+        } else {
+          console.log("No more cards in the deck!");
+        }
+    } 
+    
 
     getDeck() {
         return this.cards;
@@ -274,11 +281,15 @@ export class Game extends Scene
           [array[currentIndex], array[randomIndex]] = [
             array[randomIndex], array[currentIndex]];
         }
-      }
+    }
+
+    
     create () {
         let self = this
         this.mouseX = this.input.mousePointer.x
         this.mouseY = this.input.mousePointer.y
+
+        this.drawButton = this.add.drawCard(100, 100, 'draw-button', this.drawCard, this);
 
         this.add.image(645, 390, 'field').setScale(3.7, 2.8);
         this.cardBack = this.add.image( 1067, 700, 'dos-des-cartes' ).setScale(0.1, 0.1);
@@ -293,6 +304,11 @@ export class Game extends Scene
         let titouan = new CardData('Titouan', 10, 10, 0)
         let MemeLord_Malveillance_MAX = new CardData('MemeLord_Malveillance_MAX', 20, 20, 4)
         let vodoo = new CardData('Mage_Vodoo_Ultime', 1, 1, 0)
+        let luc_le_destructeur_de_chargeur = new CardData('Luc_Destructeur_de_chargeur', 10, 5, 0)
+        let FC_Classico_Leo = new CardData('FC_Classico_Leo', 2, 20, 0)
+        let EXODIA_Anthony = new CardData('EXODIA_Anthony', 20, 20, 0)
+        let Thomas_Fourras = new CardData('Thomas_Fourras', 13, 1, 0)
+        let Luka_retraite = new CardData('Luka_retraite', 14, 9, 0)
         let lol = new CardData('Ranked_Level_400_sur_LoL', 12, 8, 0)
 
         let deck = [saitamazad, titouan, MemeLord_Malveillance_MAX, vodoo, lol]
@@ -300,7 +316,12 @@ export class Game extends Scene
         for (let i = 0; i < 5; i++) {
             this.makeCard(deck[i].name, i, {atk: deck[i].atk, hp: deck[i].hp, sacrificesRequired: deck[i].sacrificesRequired});
         }
+
+        
+
     }
+
+
     playCardOnHand(x, y) {
         if (y > 700 && y < 800) {
             if (x < 520) {
