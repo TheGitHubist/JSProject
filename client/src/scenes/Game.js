@@ -73,6 +73,31 @@ export class Game extends Scene
 
         this.field = new Field();
     }
+    positionChecker(x, y, typeCard, card) {
+        switch(typeCard) {
+            case 'monster':
+                if (this.field.PlayerOneMonsterCard.length < 5) {
+                    if (y > 500 && y < 700) {
+                        this.field.PlayerOneMonsterField.push(card);
+                    }
+                }
+                break;
+            case 'support':
+                if (this.field.PlayerOneSpecialField.length < 5) {
+                    if (y > 700 && y < 750) {
+                        this.field.PlayerOneSpecialField.push(card);
+                    }
+                }
+                break;
+            case 'trap':
+                if (this.field.PlayerOneSpecialField.length < 5) {
+                    if (y > 700 && y < 750) {
+                        this.field.PlayerOneSpecialField.push(card);
+                    }
+                }
+                break;
+            }
+        }
     moveDown(gameObject) {
         gameObject.y += 10;
     }

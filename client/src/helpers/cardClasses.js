@@ -132,8 +132,10 @@ class Equipement extends Card {
 
 class Field {
     constructor() {
-        this.PlayerOneField = [];
-        this.PlayerTwoField = [];
+        this.PlayerOneMonsterField = [];
+        this.PlayerTwoMonsterField = [];
+        this.PlayerOneSpecialField = [];
+        this.PlayerTwoSpecialField = [];
         this.PlayerOneGraveyard = [];
         this.PlayerTwoGraveyard = [];
         this.PlayerOneHand = [];
@@ -148,54 +150,6 @@ class Field {
         this.PlayerTwoContinousTrap = [];
         this.PlayerOneAnihilatedCards = [];
         this.PlayerTwoAnihilatedCards = [];
-    }
-    getPlayerOneField() {
-        return this.PlayerOneField;
-    }
-    getPlayerTwoField() {
-        return this.PlayerTwoField;
-    }
-    getPlayerOneGraveyard() {
-        return this.PlayerOneGraveyard;
-    }
-    getPlayerTwoGraveyard() {
-        return this.PlayerTwoGraveyard;
-    }
-    getPlayerOneHand() {
-        return this.PlayerOneHand;
-    }
-    getPlayerTwoHand() {
-        return this.PlayerTwoHand;
-    }
-    getPlayerOneDeck() {
-        return this.PlayerOneDeck;
-    }
-    getPlayerTwoDeck() {
-        return this.PlayerTwoDeck;
-    }
-    getPlayerOneFieldsCard() {
-        return this.PlayerOneFieldsCard;
-    }
-    getPlayerTwoFieldsCard() {
-        return this.PlayerTwoFieldsCard;
-    }
-    getPlayerOneContinousSpell() {
-        return this.PlayerOneContinousSpell;
-    }
-    getPlayerTwoContinousSpell() {
-        return this.PlayerTwoContinousSpell;
-    }
-    getPlayerOneContinousTrap() {
-        return this.PlayerOneContinousTrap;
-    }
-    getPlayerTwoContinousTrap() {
-        return this.PlayerTwoContinousTrap;
-    }
-    getPlayerOneAnihilatedCards() {
-        return this.PlayerOneAnihilatedCards;
-    }
-    getPlayerTwoAnihilatedCards() {
-        return this.PlayerTwoAnihilatedCards;
     }
 }
 
