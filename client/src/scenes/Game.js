@@ -99,6 +99,15 @@ class Card {
     }
 }
 
+class CardData {
+    constructor(name, atk, hp, sacrificesRequired) {
+        this.name = name;
+        this.atk = atk;
+        this.hp = hp;
+        this.sacrificesRequired = sacrificesRequired;
+    }
+}
+
 export class Game extends Scene
 {
     constructor ()
@@ -280,45 +289,16 @@ export class Game extends Scene
             this.cardBack = this.add.image( 455 + (89*i), 25, 'dos-des-cartes' ).setScale(0.09, 0.09);
         }
 
-        let deck = ['Titouan', 'Saitam-Azad', 'Salut_a_toi_jeune_entrepreneur', 'Mage_Vodoo_Ultime', 'Tu_veux_mon_sandwitch', 'MemeLord_Malveillance_MAX']
-        let paramss = [
-            {
-                atk: 5,
-                hp: 10,
-                sacrificesRequired: 0,
-            }, 
-            {
-                atk: 20,
-                hp: 1,
-                sacrificesRequired: 0,
-            },
-            {
-                atk: 15,
-                hp: 10,
-                sacrificesRequired: 2,
-            },
-            {
-                atk: 1,
-                hp: 1,
-                sacrificesRequired: 0,
-            },
-            {
-                atk: 10,
-                hp: 12,
-                sacrificesRequired: 0,
-            }, 
-            {
-                atk: 20,
-                hp: 20,
-                sacrificesRequired: 4,
-            }
-        ]
-        this.shuffle(deck);
-        this.shuffle(paramss);
+        let saitamazad = new CardData('Saitam-Azad', 20, 1, 0)
+        let titouan = new CardData('Titouan', 10, 10, 0)
+        let MemeLord_Malveillance_MAX = new CardData('MemeLord_Malveillance_MAX', 20, 20, 4)
+        let vodoo = new CardData('Mage_Vodoo_Ultime', 1, 1, 0)
+        let lol = new CardData('Ranked_Level_400_sur_LoL', 12, 8, 0)
 
-        let cardNumber = 0;
+        let deck = [saitamazad, titouan, MemeLord_Malveillance_MAX, vodoo, lol]
+
         for (let i = 0; i < 5; i++) {
-            this.makeCard(deck[i], i, paramss[i]);
+            this.makeCard(deck[i].name, i, {atk: deck[i].atk, hp: deck[i].hp, sacrificesRequired: deck[i].sacrificesRequired});
         }
     }
     playCardOnHand(x, y) {
