@@ -155,6 +155,7 @@ export class Game extends Scene
         this.load.image('Titan_Prismatique', '../assets/monstres/Titan_Prismatique.png');
         this.load.image('Titouan', '../assets/monstres/Titouan.png');
         this.load.image('Tu_veux_mon_sandwitch', '../assets/monstres/Tu_veux_mon_sandwitch.png');
+        this.load.image('Thomas_Fourras', '../assets/piege/Thomas_Fourras.png');
 
         //back of cards
         this.load.image('dos-des-cartes','../assets/dos-des-cartes.png')
