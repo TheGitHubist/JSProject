@@ -61,8 +61,12 @@ class Deck {
 }
 
 class Card {
-    constructor(scene, name, xPos, atk, hp, sacrificesRequired) {
-        this.card = scene.add.image( 470 + (xPos*90), 750, name ).setScale(0.06, 0.06).setInteractive();
+    constructor(scene, name, xPos, atk, hp, sacrificesRequired, isBack=false) {
+        if (isBack) {
+            this.card = scene.add.image( 455 + (xPos*89), 25, 'dos-des-cartes' ).setScale(0.09, 0.09);
+        } else {
+            this.card = scene.add.image( 470 + (xPos*90), 750, name ).setScale(0.06, 0.06).setInteractive();
+        }
         this.scene = scene;
         this.originX = 470 + (xPos*90);
         this.originY = 750;
@@ -101,18 +105,39 @@ class Card {
             }
         }
     }
-    canSummon() {
+    canBeSummoned() {
         return this.scene.field.playerOneSacrifices.length >= this.sacrificesRequired;
+    }
+    canSummon() {
+        if (this.canBeSummoned() && this.sacrificesRequired > 0 && this.hasBeenDraged) {
+            let sc = 0;
+            while (sc < this.sacrificesRequired) {
+                let ZaCardo = this.scene.field.playerOneSacrifices.shift()
+                for (let i = 0; i < 100; i++) {
+                    this.scene.moveRight(this)
+                }
+                this.scene.field.PlayerOneAnihilatedCards.push(ZaCardo);
+                sc++;
+            }
+        }
+        return this.canBeSummoned()
     }
 }
 
 class CardData {
-    constructor(name, atk, hp, sacrificesRequired) {
+    constructor(name, atk, hp, sacrificesRequired, mentor=false) {
         this.name = name;
         this.atk = atk;
         this.hp = hp;
         this.sacrificesRequired = sacrificesRequired;
+        this.mentor = mentor;
     }
+}
+
+let turns = {
+    draw_standby : 1,
+    attack : 2,
+    end_turn : 3
 }
 
 export class Game extends Scene
@@ -179,7 +204,7 @@ export class Game extends Scene
         this.load.image('Titan_Prismatique', '../assets/monstres/Titan_Prismatique.png');
         this.load.image('Titouan', '../assets/monstres/Titouan.png');
         this.load.image('Tu_veux_mon_sandwitch', '../assets/monstres/Tu_veux_mon_sandwitch.png');
-        this.load.image('Thomas_Fourras', '../assets/piege/Thomas_Fourras.png');
+        this.load.image('Thomas_Fourras', '../assets/monstres/Thomas_Fourras.png');
 
         //back of cards
         this.load.image('dos-des-cartes','../assets/dos-des-cartes.png')
@@ -189,6 +214,13 @@ export class Game extends Scene
 
         this.field = new Field();
         this.cards = []
+        this.turns = turns.draw_standby;
+
+        this.pOneLife = 100;
+        this.pTwoLife = 100;
+    }
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     positionChecker(x, y, originX, originY, typeCard, card, gameObject) {
@@ -209,7 +241,7 @@ export class Game extends Scene
                     return false;
                 }
     
-                if (y < 460 || y > 580) {
+                if (y < 460 || y > 600) {
                     gameObject.x = originX;
                     gameObject.y = originY;
                     return false;
@@ -225,6 +257,12 @@ export class Game extends Scene
                     gameObject.x = 780;
                 } else if (x > 840 && x <= 970) {
                     gameObject.x = 920;
+                } else if (x < 220) {
+                    gameObject.x = 203;
+                    gameObject.y = 720;
+                    card.hasBeenDraged = true;
+                    this.field.playerOneSacrifices.push(card);
+                    return true;
                 } else {
                     gameObject.x = originX;
                     gameObject.y = originY;
@@ -258,6 +296,17 @@ export class Game extends Scene
                 return true;
         }
     }
+
+    CanSummonExodia() {
+        let mentors = 0;
+        for (let i = 0; i < this.field.playerOneSacrifices.length; i++) {
+            if (this.field.playerOneSacrifices[i].mentor) {
+                mentors++;
+            }
+        }
+        return mentors >= 4;
+    }
+
     moveDown(gameObject) {
         gameObject.y += 10;
     }
@@ -270,10 +319,16 @@ export class Game extends Scene
     moveRight(gameObject) {
         gameObject.x += 10;
     }
-    makeCard(name, xPos, params) {
-        let card = new Card(this, name, xPos, params.atk, params.hp, params.sacrificesRequired)
-        this.field.PlayerOneHand.push(card);
-        this.cards.push(card)
+    makeCard(name, xPos, params, isBot=false, isBack=false) {
+        if (isBot && isBack) {
+            let card = new Card(this, name, xPos, params.atk, params.hp, params.sacrificesRequired, true)
+            this.field.PlayerTwoHand.push(card);
+            this.cards.push(card)
+        } else {
+            let card = new Card(this, name, xPos, params.atk, params.hp, params.sacrificesRequired)
+            this.field.PlayerOneHand.push(card);
+            this.cards.push(card)
+        }
     }
     shuffle(array) {
         let currentIndex = array.length;
@@ -284,34 +339,38 @@ export class Game extends Scene
             array[randomIndex], array[currentIndex]];
         }
     }
-
-    
+    botTurn() {
+        for (let i = 0; i < this.field.PlayerTwoHand.length; i++) {
+            this.sleep(1.5)
+            let card = this.add.image(1070, 55, this.field.PlayerTwoHand[i].name).setScale(0.07, 0.07);
+            card.rotation = Math.PI
+        }
+    }
     create () {
+        this.turns = turns.draw_standby;
         let self = this
         this.mouseX = this.input.mousePointer.x
         this.mouseY = this.input.mousePointer.y
-
-        this.drawButton = this.add.drawCard(100, 100, 'draw-button', this.drawCard, this);
 
         this.add.image(645, 390, 'field').setScale(3.7, 2.8);
         this.cardBack = this.add.image( 1067, 700, 'dos-des-cartes' ).setScale(0.1, 0.1);
 
         this.cardBack = this.add.image( 205, 55, 'dos-des-cartes' ).setScale(0.1, 0.1);
 
-        for (let i = 0; i < 5; i++) {
-            this.cardBack = this.add.image( 455 + (89*i), 25, 'dos-des-cartes' ).setScale(0.09, 0.09);
-        }
+        this.sacrificePlace = this.add.image(203, 590, 'Trous_noirs').setScale(0.07, 0.07);
+        this.sacrificePlaceTwo = this.add.image(1070, 205, 'Trous_noirs').setScale(0.07, 0.07);
+        this.sacrificePlaceTwo.rotation = Math.PI;
 
-        let saitamazad = new CardData('Saitam-Azad', 20, 1, 0)
+        let saitamazad = new CardData('Saitam-Azad', 20, 1, 0, true)
         let titouan = new CardData('Titouan', 10, 10, 0)
         let MemeLord_Malveillance_MAX = new CardData('MemeLord_Malveillance_MAX', 20, 20, 4)
         let vodoo = new CardData('Mage_Vodoo_Ultime', 1, 1, 0)
-        let luc_le_destructeur_de_chargeur = new CardData('Luc_Destructeur_de_chargeur', 10, 5, 0)
+        let luc_le_destructeur_de_chargeur = new CardData('Luc_Destructeur_de_chargeur', 10, 5, 0, true)
         let FC_Classico_Leo = new CardData('FC_Classico_Leo', 2, 20, 0)
         let EXODIA_Anthony = new CardData('EXODIA_Anthony', 20, 20, 0)
-        let Thomas_Fourras = new CardData('Thomas_Fourras', 13, 1, 0)
-        let Luka_retraite = new CardData('Luka_retraite', 14, 9, 0)
-        let lol = new CardData('Ranked_Level_400_sur_LoL', 12, 8, 0)
+        let Thomas_Fourras = new CardData('Thomas_Fourras', 13, 1, 0, true)
+        let Luka_retraite = new CardData('Luka_retraite', 14, 9, 0, true)
+        let lol = new CardData('Ranked_Level_400_sur_LoL', 12, 8, 0, true)
         let Sentinelle = new CardData('Sentinelle', 17, 10, 0)
         let Tu_veux_mon_sandwitch = new CardData('Tu_veux_mon_sandwitch ', 10, 10, 0)
         let Developpeur_surcharge = new CardData('Developpeur_surcharge', 1, 10, 0)
@@ -351,14 +410,36 @@ export class Game extends Scene
         let Trous_noirs = new CardData('Trous_noirs', 0, 0, 0)
 
 
-        let deck = [saitamazad, titouan, MemeLord_Malveillance_MAX, vodoo, lol]
+        let deck = [saitamazad, titouan, MemeLord_Malveillance_MAX, vodoo, lol, luc_le_destructeur_de_chargeur, Developpeur_surcharge, Luka_retraite, Thomas_Fourras]
+        this.shuffle(deck)
 
         for (let i = 0; i < 5; i++) {
             this.makeCard(deck[i].name, i, {atk: deck[i].atk, hp: deck[i].hp, sacrificesRequired: deck[i].sacrificesRequired});
         }
 
-        
+        let deckMentor = [saitamazad, lol, luc_le_destructeur_de_chargeur, Luka_retraite, Thomas_Fourras]
+        this.shuffle(deckMentor)
 
+        for (let i = 0; i < 5; i++) {
+            this.makeCard(deckMentor[i].name, i, {atk: deckMentor[i].atk, hp: deckMentor[i].hp, sacrificesRequired: deckMentor[i].sacrificesRequired}, true, true);
+        }
+        
+        const attackTurn = this.add.text(300, 380, "Tour d'attaque", { fill: '#000000' });
+        attackTurn.setInteractive();
+        attackTurn.on('pointerdown', () => {
+            console.log("change turn")
+            this.turns = turns.attack;
+            attackTurn.disableInteractive();
+        })
+
+        const endTurn = this.add.text(880, 380, "Fin de tour", { fill: '#000000' });
+        endTurn.setInteractive();
+        endTurn.on('pointerdown', () => {
+            console.log("change turn")
+            this.turns = turns.end_turn;
+            attackTurn.disableInteractive();
+            endTurn.disableInteractive();
+        })
     }
 
 
@@ -371,51 +452,55 @@ export class Game extends Scene
     }
     
     update(time, delta) {
-        this.mouseX = this.input.mousePointer.x;
-        this.mouseY = this.input.mousePointer.y;
-    
-        let cardToDrag = null;
-    
-        if (this.currentlyDraggingCard) {
-            for (let i = 0; i < this.cards.length; i++) {
-                let card = this.cards[i];
-                if (card.canSummon() && !card.hasBeenDraged && Phaser.Geom.Rectangle.Contains(card.card.getBounds(), this.input.manager.activePointer.x, this.input.manager.activePointer.y)) {
-                    cardToDrag = card;
-                    break;
+        if (this.turns == turns.draw_standby) {
+            this.mouseX = this.input.mousePointer.x;
+            this.mouseY = this.input.mousePointer.y;
+        
+            let cardToDrag = null;
+        
+            if (this.currentlyDraggingCard) {
+                for (let i = 0; i < this.cards.length; i++) {
+                    let card = this.cards[i];
+                    if (card.canSummon() && !card.hasBeenDraged && Phaser.Geom.Rectangle.Contains(card.card.getBounds(), this.input.manager.activePointer.x, this.input.manager.activePointer.y)) {
+                        cardToDrag = card;
+                        break;
+                    }
+                }
+            } else {
+                for (let i = 0; i < this.cards.length; i++) {
+                    let card = this.cards[i];
+                    if (card.canSummon() && !card.hasBeenDraged && Phaser.Geom.Rectangle.Contains(card.card.getBounds(), this.input.manager.activePointer.x, this.input.manager.activePointer.y)) {
+                        cardToDrag = card;
+                        break;
+                    }
                 }
             }
-        } else {
-            for (let i = 0; i < this.cards.length; i++) {
-                let card = this.cards[i];
-                if (card.canSummon() && !card.hasBeenDraged && Phaser.Geom.Rectangle.Contains(card.card.getBounds(), this.input.manager.activePointer.x, this.input.manager.activePointer.y)) {
-                    cardToDrag = card;
-                    break;
+        
+            if (cardToDrag && this.input.manager.activePointer.isDown) {
+                if (!this.currentlyDraggingCard || this.currentlyDraggingCard !== cardToDrag) {
+                    if (this.currentlyDraggingCard) {
+                        this.currentlyDraggingCard.isDragging = false;
+                        this.input.setDraggable(this.currentlyDraggingCard.card, false);
+                    }
+                    cardToDrag.isDragging = true;
+                    this.input.setDraggable(cardToDrag.card);
+                    this.currentlyDraggingCard = cardToDrag;
                 }
+                cardToDrag.card.x = this.input.manager.activePointer.x;
+                cardToDrag.card.y = this.input.manager.activePointer.y;
+                
+            } else if (this.currentlyDraggingCard && !this.input.manager.activePointer.isDown) {
+                this.currentlyDraggingCard.isDragging = false;
+                this.input.setDraggable(this.currentlyDraggingCard.card, false);
+                let ActX = this.currentlyDraggingCard.card.x;
+                let ActY = this.currentlyDraggingCard.card.y;
+                this.positionChecker(ActX, ActY, this.currentlyDraggingCard.originX, this.currentlyDraggingCard.originY, 'monster', this.currentlyDraggingCard, this.currentlyDraggingCard.card);
+                this.currentlyDraggingCard.originX = ActX;
+                this.currentlyDraggingCard.originY = ActY;
+                this.currentlyDraggingCard = null;
             }
-        }
-    
-        if (cardToDrag && this.input.manager.activePointer.isDown) {
-            if (!this.currentlyDraggingCard || this.currentlyDraggingCard !== cardToDrag) {
-                if (this.currentlyDraggingCard) {
-                    this.currentlyDraggingCard.isDragging = false;
-                    this.input.setDraggable(this.currentlyDraggingCard.card, false);
-                }
-                cardToDrag.isDragging = true;
-                this.input.setDraggable(cardToDrag.card);
-                this.currentlyDraggingCard = cardToDrag;
-            }
-            cardToDrag.card.x = this.input.manager.activePointer.x;
-            cardToDrag.card.y = this.input.manager.activePointer.y;
-            
-        } else if (this.currentlyDraggingCard && !this.input.manager.activePointer.isDown) {
-            this.currentlyDraggingCard.isDragging = false;
-            this.input.setDraggable(this.currentlyDraggingCard.card, false);
-            let ActX = this.currentlyDraggingCard.card.x;
-            let ActY = this.currentlyDraggingCard.card.y;
-            this.positionChecker(ActX, ActY, this.currentlyDraggingCard.originX, this.currentlyDraggingCard.originY, 'monster', this.currentlyDraggingCard, this.currentlyDraggingCard.card);
-            this.currentlyDraggingCard.originX = ActX;
-            this.currentlyDraggingCard.originY = ActY;
-            this.currentlyDraggingCard = null;
+        } else if (this.turns = turns.end_turn) {
+            this.botTurn()
         }
     }
 }
