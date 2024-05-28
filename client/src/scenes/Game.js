@@ -340,11 +340,14 @@ export class Game extends Scene
         }
     }
     botTurn() {
+        console.log(this.field.PlayerTwoHand)
         for (let i = 0; i < this.field.PlayerTwoHand.length; i++) {
-            this.sleep(1.5)
+            console.log(i)
+            //this.sleep(1500)
             let card = this.add.image(1070, 55, this.field.PlayerTwoHand[i].name).setScale(0.07, 0.07);
             card.rotation = Math.PI
         }
+        this.turns = turns.draw_standby
     }
     create () {
         this.turns = turns.draw_standby;
